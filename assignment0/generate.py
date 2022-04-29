@@ -1,10 +1,3 @@
-###############################################################################
-# Language Modeling on Wikitext-2
-#
-# This file generates new sentences sampled from the language model
-#
-###############################################################################
-
 import argparse
 
 import torch

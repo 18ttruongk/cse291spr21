@@ -99,10 +99,7 @@ test_data = batchify(corpus.test, eval_batch_size)
 ###############################################################################
 
 ntokens = len(corpus.dictionary)
-if args.model == 'Transformer':
-    model = model.TransformerModel(ntokens, args.emsize, args.nhead, args.nhid, args.nlayers, args.dropout).to(device)
-else:
-    model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(device)
+model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(device)
 
 criterion = nn.NLLLoss()
 
@@ -146,12 +143,8 @@ def evaluate(data_source):
     with torch.no_grad():
         for i in range(0, data_source.size(0) - 1, args.bptt):
             data, targets = get_batch(data_source, i)
-            if args.model == 'Transformer':
-                output = model(data)
-                output = output.view(-1, ntokens)
-            else:
-                output, hidden = model(data, hidden)
-                hidden = repackage_hidden(hidden)
+            output, hidden = model(data, hidden)
+            hidden = repackage_hidden(hidden)
             total_loss += len(data) * criterion(output, targets).item()
     return total_loss / (len(data_source) - 1)
 
@@ -162,19 +155,15 @@ def train():
     total_loss = 0.
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    if args.model != 'Transformer':
-        hidden = model.init_hidden(args.batch_size)
+    # if args.model != 'Transformer':
+    hidden = model.init_hidden(args.batch_size)
     for batch, i in enumerate(range(0, train_data.size(0) - 1, args.bptt)):
         data, targets = get_batch(train_data, i)
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
         model.zero_grad()
-        if args.model == 'Transformer':
-            output = model(data)
-            output = output.view(-1, ntokens)
-        else:
-            hidden = repackage_hidden(hidden)
-            output, hidden = model(data, hidden)
+        hidden = repackage_hidden(hidden)
+        output, hidden = model(data, hidden)
         loss = criterion(output, targets)
         loss.backward()
 
