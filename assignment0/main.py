@@ -11,7 +11,7 @@ import data
 import model
 
 parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 RNN/LSTM/GRU/Transformer Language Model')
-parser.add_argument('--data', type=str, default='./data/wikitext-2',
+parser.add_argument('--data', type=str, default='./data/shakespeare',
                     help='location of the data corpus')
 parser.add_argument('--trainsize', type=float, default=1.0,
                     help='Percent of total train data to use (0.0 < trainsize <= 1.0). Defaults to full corpus.')
@@ -155,7 +155,6 @@ def train():
     total_loss = 0.
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    # if args.model != 'Transformer':
     hidden = model.init_hidden(args.batch_size)
     for batch, i in enumerate(range(0, train_data.size(0) - 1, args.bptt)):
         data, targets = get_batch(train_data, i)
