@@ -26,6 +26,7 @@ class Corpus(object):
 
     def tokenize(self, path, data_pct=1.0):
         """Tokenizes a text file."""
+        print("path = " + str(path)) # del
         assert os.path.exists(path)
         assert 0.0 < data_pct <= 1.0 
         # Add words to the dictionary
@@ -33,9 +34,12 @@ class Corpus(object):
             total_lines = [line.strip() for line in f]
             lines = total_lines[:int(data_pct * len(total_lines))]
             for line in lines:
-                words = line.split() + ['<eos>']
-                for word in words:
-                    self.dictionary.add_word(word)
+#                 words = line.split() + ['<eos>']
+#                 for word in words:
+#                     self.dictionary.add_word(word)
+                for char in line:
+                    self.dictionary.add_word(char)
+            
 
         # Tokenize file content
         with open(path, 'r', encoding="utf8") as f:
@@ -43,10 +47,12 @@ class Corpus(object):
             total_lines = [line.strip() for line in f]
             lines = total_lines[:int(data_pct * len(total_lines))]
             for line in lines:
-                words = line.split() + ['<eos>']
+#                 words = line.split() + ['<eos>']
                 ids = []
-                for word in words:
-                    ids.append(self.dictionary.word2idx[word])
+#                 for word in words:
+                for char in line:
+#                     ids.append(self.dictionary.word2idx[word])
+                    ids.append(self.dictionary.word2idx[char])
                 idss.append(torch.tensor(ids).type(torch.int64))
             ids = torch.cat(idss)
 
