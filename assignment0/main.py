@@ -29,7 +29,7 @@ parser.add_argument('--clip', type=float, default=0.25,
                     help='gradient clipping')
 parser.add_argument('--epochs', type=int, default=40,
                     help='upper epoch limit')
-parser.add_argument('--batch_size', type=int, default=20, metavar='N',
+parser.add_argument('--batch_size', type=int, default=40, metavar='N',
                     help='batch size')
 parser.add_argument('--bptt', type=int, default=35,
                     help='sequence length')
@@ -228,8 +228,7 @@ with open(args.save, 'rb') as f:
     # after load the rnn params are not a continuous chunk of memory
     # this makes them a continuous chunk, and will speed up forward pass
     # Currently, only rnn model supports flatten_parameters function.
-    if args.model in ['RNN_TANH', 'RNN_RELU', 'LSTM', 'GRU']:
-        model.rnn.flatten_parameters()
+    model.rnn.flatten_parameters()
 
 # Run on test data.
 test_loss = evaluate(test_data)

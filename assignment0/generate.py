@@ -57,7 +57,8 @@ with open(args.outf, 'w') as outf:
 
             word = corpus.dictionary.idx2word[word_idx]
 
-            outf.write(word + ('\n' if i % 20 == 19 else ' '))
+#             outf.write(word + ('\n' if i % 20 == 19 else ' '))
+            outf.write(word)
 
             if i % args.log_interval == 0:
                 print('| Generated {}/{} words'.format(i, args.words))
